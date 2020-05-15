@@ -199,8 +199,8 @@ public:
 
   void swap(Vector& other) noexcept
   {
-    std::swap(this->begin(), other->begin());
-    std::swap(this->end(), other->end());
+    std::iter_swap(this->begin(), other.begin());
+    std::iter_swap(this->end(), other.end());
   }
 
   size_type capacity() const noexcept
@@ -417,7 +417,7 @@ typename Vector<T, Alloc>::allocator_type Vector<T, Alloc>::get_allocator()
 template <class T, class Alloc>
 bool Vector<T, Alloc>::empty()
 {
-  return const begin() == end();
+  return begin() == end();
 }
 
 template <class T, class Alloc>
