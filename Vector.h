@@ -23,14 +23,29 @@ public:
     create();
   }
 
-  explicit Vector(size_type n, const T& t = T{}) 
+  explicit Vector(size_type count, const_reference t = T{}) 
   { 
     create(n, t);
   }
 
-  Vector(const Vector& v)
+  explicit Vector(size_type count, const Allocator& alloc = Allocator())
   {
-    create(v.begin(), v.end());
+    create(count);
+  }
+
+  explicit Vector(const Allocator& alloc) noexcept
+  {
+    create();
+  }
+
+  Vector(const Vector& other)
+  {
+    create(other.begin(), other.end());
+  }
+
+  Vector(std::initializer_list<T> init, const Allocator& alloc = Allocator())
+  {
+    create(init.begin(), init.end());
   }
   Vector<T, Allocator>& operator = (const Vector& vector);
 
