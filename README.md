@@ -36,9 +36,7 @@ Duomenų kiekis | std::vector | Vector
 Naudota realizacija | Perskirstymai
 ------------------- | -------------
 std::vector | 45
-Vector | 
-
-Programa su Vector neveikia...
+Vector | 45
 
 ### 4 dalis:
 
@@ -46,7 +44,6 @@ Programa su Vector neveikia...
 Realizacija | Studentų generavimas | Failų generavimas | Studentų rikiavimas | Studentų dalijimas | Pažangių studentų surašymas į failą | Nepažangių studentų surašymas į failą | Visas programos veikimo laikas
 ----------- | -------------------- | ----------------- | ------------------- | ------------------ | ------------------------------------------- | ------------------------------------- | ------------------------------
 std::vector | 1.95959s | 0.507671s | 0.242042s | 0.0378362s | 0.350116s | 0.359497s | 3.48306s
-Vector | 
+Vector | 2.26726s | 0.588031s | 0.496491s | 10.8435s | 0.692087s | 0.360523s | 15.2797s
 
-Programa su Vector neveikia...
 
