@@ -29,4 +29,24 @@ Duomenų kiekis | std::vector | Vector
 10000000 | 0.0947367s | 0.0676143s
 100000000 | 1.01252s | 0.549155s
 
+### 3 dalis:
+
+#### std::vector ir Vector perskirstymų skaičiaus užpildant vektorių 100000000 studentų palyginimas:
+
+Naudota realizacija | Perskirstymai
+------------------- | -------------
+std::vector | 45
+Vector | 
+
+Programa su Vector neveikia...
+
+### 4 dalis:
+
+#### std::vector ir Vector realizacijų spartos palyginimas su 100000 studentų:
+Realizacija | Studentų generavimas | Failų generavimas | Studentų rikiavimas | Studentų dalijimas | Pažangių studentų surašymas į failą | Nepažangių studentų surašymas į failą | Visas programos veikimo laikas
+----------- | -------------------- | ----------------- | ------------------- | ------------------ | ------------------------------------------- | ------------------------------------- | ------------------------------
+std::vector | 1.95959s | 0.507671s | 0.242042s | 0.0378362s | 0.350116s | 0.359497s | 3.48306s
+Vector | 
+
+Programa su Vector neveikia...
 
