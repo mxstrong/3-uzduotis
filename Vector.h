@@ -1,4 +1,5 @@
-﻿#include <memory>
+﻿#pragma once
+#include <memory>
 #include <algorithm>
 #include <iterator>
 
@@ -23,16 +24,31 @@ public:
     create();
   }
 
-  explicit Vector(size_type n, const T& t = T{}) 
+  explicit Vector(size_type count, const_reference t = T{}) 
   { 
-    create(n, t);
+    create(count, t);
   }
 
-  Vector(const Vector& v)
+  explicit Vector(size_type count, const Allocator& alloc = Allocator())
   {
-    create(v.begin(), v.end());
+    create(count);
   }
-  Vector<T, Allocator>& operator = (const Vector& vector);
+
+  explicit Vector(const Allocator& alloc) noexcept
+  {
+    create();
+  }
+
+  Vector(const Vector& other)
+  {
+    create(other.begin(), other.end());
+  }
+
+  Vector(std::initializer_list<T> init, const Allocator& alloc = Allocator())
+  {
+    create(init.begin(), init.end());
+  }
+  Vector<T, Allocator>& operator = (const Vector& Vector);
 
   Vector<T, Allocator>::allocator_type get_allocator();
 
@@ -44,6 +60,8 @@ public:
   {
     uncreate();
   }
+
+  typename Vector<T, Allocator>::iterator erase(iterator first, iterator last);
 
   Vector& assign(const Vector&);
 
@@ -75,28 +93,19 @@ public:
     return elements[i];
   }
 
-  reference front()
-  {
-    return elements;
-  }
-
   const reference front() const
   {
-    return const elements;
+    return elements[0];
   }
 
   reference back()
   {
-    if (this->size() = 0)
-    {
-      return std::prev(this->end());
-    }
     return *(available - 1);
   }
 
   const reference back() const
   {
-    if (this->size() = 0)
+    if (this->size() == 0)
     {
       return const std::prev(this->end());
     }
@@ -184,8 +193,8 @@ public:
 
   void swap(Vector& other) noexcept
   {
-    std::swap(this->begin(), other->begin());
-    std::swap(this->end(), other->end());
+    std::iter_swap(this->begin(), other.begin());
+    std::iter_swap(this->end(), other.end());
   }
 
   size_type capacity() const noexcept
@@ -271,15 +280,14 @@ public:
 
   iterator insert(const_iterator pos, const_reference value);
   iterator insert(const_iterator pos, size_type count, const_reference value);
-  template< class InputIt >
-  iterator insert(const_iterator pos, InputIt first, InputIt last);
+  template <class InputIt>
+  iterator insert(iterator pos, InputIt first, InputIt last);
   iterator insert(const_iterator pos, std::initializer_list<T> ilist);
+
+  iterator erase(iterator pos);
 
   template< class... Args >
   iterator emplace(const_iterator pos, Args&&... args);
-
-  iterator erase(const_iterator pos);
-  iterator erase(const_iterator first, const_iterator last);
 
   friend void swap(Vector& lhs,
     Vector& rhs) noexcept;
@@ -402,7 +410,7 @@ typename Vector<T, Alloc>::allocator_type Vector<T, Alloc>::get_allocator()
 template <class T, class Alloc>
 bool Vector<T, Alloc>::empty()
 {
-  return const begin() == end();
+  return begin() == end();
 }
 
 template <class T, class Alloc>
@@ -414,12 +422,12 @@ typename Vector<T, Alloc>::size_type Vector<T, Alloc>::max_size()
 template <class T, class Alloc>
 void Vector<T, Alloc>::reserve(size_type new_cap)
 {
-  alloc.allocate(new_cap);
+  iterator new_elements = alloc.allocate(new_cap);
   iterator new_available = std::uninitialized_copy(elements, available, new_elements);
   uncreate();
   elements = new_elements;
   available = new_available;
-  limit = elements + new_size;
+  limit = elements + new_cap;
 }
 
 template <class T, class Alloc>
@@ -435,7 +443,7 @@ void Vector<T, Alloc>::shrink_to_fit()
 }
 
 template <class T, class Alloc>
-void Vector<T, Alloc>::clear() noexcept
+void Vector<T, Alloc>::clear()
 {
   uncreate();
 }
@@ -520,10 +528,10 @@ typename Vector<T, Alloc>::iterator Vector<T, Alloc>::insert(const_iterator pos,
   }
 }
 
-template <class T, class Alloc>
-typename Vector<T, Alloc>::iterator Vector<T, Alloc>::erase(const_iterator pos)
+template<class T, class Alloc>
+typename Vector<T, Alloc>::iterator Vector<T, Alloc>::erase(iterator pos)
 {
-  for (it = pos; it != available; ++it)
+  for (iterator it = pos; it != available; ++it)
   {
     it = it + 1;
   }
@@ -532,10 +540,10 @@ typename Vector<T, Alloc>::iterator Vector<T, Alloc>::erase(const_iterator pos)
   return pos;
 }
 
-template <class T, class Alloc>
-typename Vector<T, Alloc>::iterator Vector<T, Alloc>::erase(const_iterator first, const_iterator last)
+template<class T, class Alloc>
+typename Vector<T, Alloc>::iterator Vector<T, Alloc>::erase(iterator first, iterator last)
 {
-  for (iterator it first; it != last; ++it)
+  for (iterator it = first; it != last; ++it)
   {
     delete it;
   }
@@ -554,36 +562,17 @@ Vector<T, Alloc>& Vector<T, Alloc>::assign(const Vector& vector) {
 
 template <class T, class Alloc>
 template<class InputIt>
-typename Vector<T, Alloc>::iterator Vector<T, Alloc>::insert(const_iterator pos, InputIt first, InputIt last)
+typename Vector<T, Alloc>::iterator Vector<T, Alloc>::insert(iterator pos, InputIt first, InputIt last)
 {
-  if (last - first <= this->capacity)
-  {
-    int current = 0;
-    --pos;
-    for (iterator it = first; it != last; ++it)
-    {
-      std::swap(pos, available + current);
-      *pos = *it;
-      ++pos;
-      ++current;
-    }
-  }
-  else {
-    while (count > this->capacity())
-    {
-      this->grow();
-    }
-
-    int current = 0;
-    --pos;
-    for (iterator it = first; it != last; ++it)
-    {
-      std::swap(pos, available + current);
-      *pos = *it;
-      ++pos;
-      ++current;
-    }
-  }
+  size_type new_size = (last - first) + this->size();
+  iterator new_elements = alloc.allocate(new_size);
+  iterator temp_available = std::uninitialized_copy(elements, pos - 1, new_elements);
+  temp_available = std::uninitialized_copy(first, last, temp_available);
+  iterator new_available = std::uninitialized_copy(pos, available, temp_available);
+  uncreate();
+  elements = new_elements;
+  available = new_available;
+  limit = elements + new_size;
 }
 
 template <class T, class Alloc>
