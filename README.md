@@ -1,6 +1,10 @@
 # 3-uzduotis
 
 ## Versijų istorija
+
+### [Versija v1.1](https://github.com/mxstrong/3-uzduotis/releases/tag/v1.1)
+Pridėtas priskyrimo operatorius, kad būtų galima Vector priskirti std::vector, taip laikinai leidžiant naudotis kai kuriomis funkcijomis, kurios neveikia su Vector. 
+
 ### [Versija v1.0](https://github.com/mxstrong/3-uzduotis/releases/tag/v1.0)
 Mano std::vector bibliotekos implementacija. Naudokitės atsargiai: ne visos funkcijos veikia, yra žinomų klaidų. 
 
