@@ -2,6 +2,7 @@
 #include <memory>
 #include <algorithm>
 #include <iterator>
+#include <vector>
 
 template <class T, class Allocator = std::allocator<T>>
 class Vector {
@@ -49,6 +50,8 @@ public:
     create(init.begin(), init.end());
   }
   Vector<T, Allocator>& operator = (const Vector& Vector);
+
+  Vector<T, Allocator>& operator = (const std::vector<T>& Vector);
 
   Vector<T, Allocator>::allocator_type get_allocator();
 
@@ -397,6 +400,17 @@ Vector<T, Alloc>& Vector<T, Alloc>::operator = (const Vector& vector)
   if (&vector != this) {
     uncreate();
     create(vector.begin(), vector.end());
+  }
+  return *this;
+}
+
+template <class T, class Alloc>
+Vector<T, Alloc>& Vector<T, Alloc>::operator = (const std::vector<T>& vector)
+{
+  uncreate();
+  for (const auto element : vector)
+  {
+    this->push_back(element);
   }
   return *this;
 }
